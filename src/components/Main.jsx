@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
+import {useSelector, useDispatch} from 'react-redux'
 import { Navbar, Form, Container, Row, Col, Card } from "react-bootstrap";
+import { weatherData } from "../actions";
 import "./styles.css";
 
 const Main = () => {
   const [query, setQuery] = useState("");
   // eslint-disable-next-line
   const [data, setData] = useState(null);
-
+  const dispatch = useDispatch()
   // const datafetched = async () => {
   //     try {
   //       const response = await fetch('https://api.openweathermap.org/data/2.5/weather?q=rome&appid=249b512fd8890b5a388430ba20b72272',{})
@@ -24,8 +26,9 @@ const Main = () => {
 
   const handleChange = (e) => {
     setQuery(e.target.value);
+   
   };
-
+ 
   const handleSubmit = async (e) => {
 
     e.preventDefault()
@@ -36,7 +39,9 @@ const Main = () => {
         if (response.ok) {
           const data  = await response.json()
           setData(data)
+          dispatch(weatherData(data))
           console.log(data)
+          
         } else{
           console.log("something went wrong!")
         }
@@ -71,7 +76,7 @@ const Main = () => {
             </Form>
           </Col>
           <Col className="col-card">
-          <Card
+          {query? <Card
             bg="dark"
             text="white"
             style={{ width: "18rem" }}
@@ -89,7 +94,9 @@ const Main = () => {
                 <p>Wind: {data.wind.speed} km/hr</p>
               </Card.Text>
             </Card.Body>
-          </Card>
+          </Card>:
+          <h6 className="my-5">Search for weather</h6>
+          }
           </Col>
         </Row>
       </Container>
